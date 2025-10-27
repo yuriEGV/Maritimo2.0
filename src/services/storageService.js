@@ -1,9 +1,12 @@
 const path = require('path');
 const fs = require('fs');
+const os = require('os');
 
-const storageDir = path.join(process.cwd(), 'storage');
+const storageDir = (process.env.VERCEL || process.env.NOW_REGION)
+	? path.join('/tmp', 'storage')
+	: path.join(os.tmpdir(), 'storage');
 if (!fs.existsSync(storageDir)) {
-    fs.mkdirSync(storageDir);
+	fs.mkdirSync(storageDir, { recursive: true });
 }
 
 async function saveStreamToFile(stream, filename) {
